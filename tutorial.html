@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="style/majorstyle.css">
     <style>
         #button1{
-            margin-left: 42%;
+            margin-left: 38%;
             width: 200pt;
             height: 8pt;
         }
@@ -13,7 +13,7 @@
             background: rgba(0, 0, 255, 1);
         }
         #text{
-            margin-left: 32%;
+            margin-left: 30%;
             margin-top: 44%;
             width: 380pt;
             height: 8pt;
@@ -27,10 +27,15 @@
 <body id="bg">
     <div class="container">
             <p>
-                <a onclick="aboutPressed()" class="button" id="button1"> 1 OF 6 >>></a>
+                <a onclick="aboutPressed()" class="button" id="button1">>>> 1 OF 7 >>></a>
             </p>
     </div>
     <canvas id="myCanvas"></canvas>
+    <div class="container">
+            <p>
+                <a class="button" id="text">NAVIGATE VIA MOUSEPAD</a>
+            </p>
+    </div>
     <script src="js/three.js"></script>
     <script src="js/OrbitControls.js"></script>
     <script src="js/threex.keyboardstate.js"></script>
@@ -134,8 +139,8 @@
 
         
         
-        var element = document.getElementById("button1");
-
+    var element = document.getElementById("button1");
+    var instruction = document.getElementById("text");
         
 
     //Concept 1
@@ -162,7 +167,8 @@
 
     //Concept 2
     function updateC2(){
-        element.innerHTML = " 2 OF 6 >>>";
+        scene.background = null; 
+        element.innerHTML = ">>> 2 OF 7 >>>";
         camera.position.set( 0, 0, 400 );
         body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
         function draw() {
@@ -181,7 +187,8 @@
 
     //Concept 3
     function updateC3(){
-        element.innerHTML = " 3 OF 6 >>>";
+        scene.background = null; 
+        element.innerHTML = ">>> 3 OF 7 >>>";
         camera.position.set( 0, 0, 400 );
         body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
         function draw() {
@@ -199,7 +206,8 @@
 
     //Concept 4
     function updateC4(){
-        element.innerHTML = " 4 OF 6 >>>";
+        scene.background = null; 
+        element.innerHTML = ">>> 4 OF 7 >>>";
         camera.position.set( 0, 0, 400 );
         body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
         function draw() {
@@ -217,7 +225,8 @@
 
     //Concept 5
     function updateC5(){
-        element.innerHTML = " 5 OF 6 >>>";
+        scene.background = null; 
+        element.innerHTML = ">>> 5 OF 7 >>>";
         camera.position.set( 0, 0, 400 );
         body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
         function draw() {
@@ -235,7 +244,8 @@
 
     //Concept 5
     function updateC6(){
-        element.innerHTML = " 6 OF 6 >>>";
+        scene.background = null; 
+        element.innerHTML = ">>> 6 OF 7 >>>";
         camera.position.set( 0, 0, 400 );
         body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
         function draw() {
@@ -253,7 +263,8 @@
 
     //Tutorial
     function updateTutorial(){
-        element.innerHTML = "TUTORIAL >>>";
+        element.innerHTML = ">>> 7 OF 7 >>>";
+        instruction.innerHTML = "NAVIGATE VIA ARROW KEYS";
         element.onclick = function() {
                 location.href = "mwindex.html";
             };
@@ -442,11 +453,5 @@
     }
 
     </script>
-    <div class="container">
-            <p>
-                <a href="" class="button" id="text">USE MOUSEPAD TO LOOK AROUND</a><br>
-                <a href="" class="button" id="text">MODEL: LEFT + RIGHT ARROW: ROTATION / UP + DOWN: DISTANCE</a>
-            </p>
-    </div>
 </body>
 </html>

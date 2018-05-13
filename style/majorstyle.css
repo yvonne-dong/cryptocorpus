@@ -6,6 +6,7 @@
             font-family: 'Verdana', Sans-serif;
             font-style: normal;
             font-size: 12px;
+            font-weight: 700;
             text-decoration: none;
             color: #424242;
             background-repeat: no-repeat;
@@ -27,6 +28,7 @@
 
     #myCanvas{
             position: fixed;
+            margin-top: 10pt;
             margin-left: 10%;
             background: rgba(0, 0, 0, 0);
             border: none;

@@ -4,29 +4,20 @@
     <link rel="stylesheet" href="style/majorstyle.css">
     <style>
         #button1{
-            margin-left: 55%;
-            margin-top: -35.5pt;
-            width: 50pt;
-            height: 8pt;
+            margin-left: 40%;
+            /*margin-top: -35pt;*/
+            width: 200pt;
+            height: 10pt;
         }
-        #textDisplay{
-            padding: 10px;
-            margin-top: 1pt;
-            margin-left: 42%;
-            border: none;
-            font-family: 'Verdana', Sans-serif;
-            font-style: normal;
-            font-weight: 700;
-            font-size: 12px;
-            text-decoration: none;
+        #myCanvas{
+            margin-top: 50pt;
         }
     </style>
 </head>
 <body id="bg">
     <video id="video" autoplay style="display:none"></video>
-    <p><div id="textDisplay">(3) DISCIPLINE THE BODY</div></p>
     <div class="container">
-            <p><a onclick="aboutPressed()" class="button" id="button1"> >>></a></p>
+            <p><a onclick="aboutPressed()" class="button" id="button1">>>> (3) DISCIPLINE THE BODY >>></a></p>
     </div>
     <canvas id="myCanvas"></canvas>
     <script src="js/three.js"></script>
@@ -157,6 +148,10 @@
         scene.background = reflectionCube; 
     }
 
+    //scenes
+    var sceneText = document.getElementById("button1");
+    var doc = document.body;
+
     //Load first model 
     var json1 = "model/w1json/w1.json";
 
@@ -196,6 +191,7 @@
     //Concept 1
     function updateC1(){
         orbitOn();
+        sceneText.innerHTML = ">>> 2 OF 10 >>>";
         body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
         json1 = "cube.json";
         scene.remove(scene.children[2]);
@@ -219,6 +215,7 @@
     //Femme 2
     function updateF2(){
         orbitOff();
+        sceneText.innerHTML = ">>> 3 OF 10 >>>";
         body.style = "background-image: url('assets/W2BG.png'), url('assets/BORDERS.png'); background-size: 80%, 80%; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
         json1 = "model/w2json/w2.json";
         scene.remove(scene.children[2]);
@@ -253,6 +250,7 @@
     //Concept 2
     function updateC2(){
         orbitOn();
+        sceneText.innerHTML = ">>> 4 OF 10 >>>";
         body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
         json1 = "cube.json";
         scene.remove(scene.children[2]);
@@ -279,6 +277,7 @@
     //Femme 3
     function updateF3(){
         orbitOff();
+        sceneText.innerHTML = ">>> 5 OF 10 >>>";
         body.style = "background-image: url('assets/W3BG.png'), url('assets/BORDERS.png'); background-size: 80%, 80%; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
         json1 = "model/w3json/w3.json";
         scene.remove(scene.children[2]);
@@ -313,6 +312,7 @@
     //Concept 3
     function updateC3(){
         orbitOn();
+        sceneText.innerHTML = ">>> 6 OF 10 >>>";
         body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
         json1 = "cube.json";
         scene.remove(scene.children[2]);
@@ -339,6 +339,7 @@
     //Inter 1
     function updateInter1(){
         orbitOn();
+        sceneText.innerHTML = ">>> 7 OF 10 >>>";
         body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
         json1 = "model/wInt1json/wInt1.json";
         scene.remove(scene.children[2]);
@@ -370,9 +371,9 @@
         loaderInter1.load( json1, addModelToSceneInter1 ); 
         var nav2 = 'assets/Inter/CubeBackground-';
         urls = [
-                nav2 + '04.png', nav2 + '02.png',
+                nav2 + '16.png', nav2 + '14.png',
                 nav2 + 'Top-Bottom.png', nav2 + 'Top-Bottom.png',
-                nav2 + '03.png', nav2 + '01.png'
+                nav2 + '15.png', nav2 + '13.png'
                 ];
         setSky();
     } 
@@ -380,6 +381,7 @@
     //Inter 2
     function updateInter2(){
         orbitOn();
+        sceneText.innerHTML = ">>> 8 OF 10 >>>";
         body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
         json1 = "model/wInt2json/wInt2.json";
         scene.remove(scene.children[2]);
@@ -421,6 +423,7 @@
     //Concept 4
     function updateC4(){
         orbitOn();
+        sceneText.innerHTML = ">>> 9 OF 10 >>>";
         body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
         json1 = "cube.json";
         scene.remove(scene.children[2]);
@@ -447,7 +450,7 @@
     //Call Ending
     function updateEnd(){
         orbitOff();
-        body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
+        body.style = "background-image: url('assets/BORDERS.png'), URL('assets/wEND.png'); background-size: contain, 80%; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
         json1 = "model/wInt2json/wInt2.json";
         scene.remove(scene.children[2]);
         scene.background = null; 
@@ -474,6 +477,13 @@
         console.log(jsonResponse['time'].updated);
 
         CNYf = jsonResponse['bpi'].CNY.rate_float;
+
+        var currency = document.createElement('button');
+        currency.innerHTML = "BITCOIN/CNY RATE: " + CNYf +
+        "\n SPHERE NUM: RATE / 100";
+        currency.style = "background-color: rgba(0, 0, 0, 0);  margin-left: 41%; margin-top: 44.5%; width: 200pt; height: 8pt; border: none; font-family: 'Verdana', Sans-serif; font-style: normal; font-weight: 700; font-size: 12px; text-decoration: none; position: fixed; text-align: center; vertical-align: middle; color: #424242; padding: 10px; display: inline-block; cursor: pointer;";
+        doc.appendChild(currency);
+
         var geometry = new THREE.SphereGeometry( 20, 30, 30 );
         var material = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
         var sphereNum = parseInt(CNYf * 0.01);
@@ -511,25 +521,21 @@
 
 
         //Remove previous statebutton and add ending button
-        var text = document.getElementById("textDisplay");
-        var element = document.getElementById("button1");
-        element.parentNode.removeChild(element);
-        text.innerHTML = "END";
+        sceneText.parentNode.removeChild(sceneText);
 
         function addEnding() {
             var doc = document.body;
             var about = document.createElement('button');
-            about.innerHTML = ">>>";  
-            text.style="margin-left: 50%";
-            about.style = "background-color: rgba(0, 0, 0, 0); margin-top: -36pt; margin-left: 49.5%; width: 100pt; height: 8pt; border: none; font-family: 'Verdana', Sans-serif; font-style: normal; font-weight: 700; font-size: 12px; text-decoration: none; position: fixed; text-align: center; vertical-align: middle; color: #424242; padding: 10px; display: inline-block; cursor: pointer;";
+            about.innerHTML = ">>> 10 OF 10 >>>";  
+            about.style = "background-color: rgba(0, 0, 0, 0); margin-left: 40%; width: 200pt; height: 8pt; border: none; font-family: 'Verdana', Sans-serif; font-style: normal; font-weight: 700; font-size: 12px; text-decoration: none; position: fixed; text-align: center; vertical-align: middle; color: #424242; padding: 10px; display: inline-block; cursor: pointer;";
             about.onclick = function() {
                 location.href = "about.html";
             };
             about.onmouseover = function(event) {
-                 event.srcElement.style = "background-color: rgba(0, 0, 0, 0); margin-top: -36pt; margin-left: 49.5%; width: 100pt; height: 8pt; border: none; font-family: 'Verdana', Sans-serif; font-style: italic; font-weight: 700; font-size: 12px; text-decoration: underline; position: fixed; text-align: center; vertical-align: middle; color: #0000ff; padding: 10px; display: inline-block; cursor: pointer;";
+                 event.srcElement.style = "background-color: rgba(0, 0, 0, 0); margin-left: 40%; width: 200pt; height: 8pt; border: none; font-family: 'Verdana', Sans-serif; font-style: italic; font-weight: 700; font-size: 12px; text-decoration: underline; position: fixed; text-align: center; vertical-align: middle; color: #0000ff; padding: 10px; display: inline-block; cursor: pointer;";
              };
             about.onmouseleave = function(event) {
-                 event.srcElement.style = "background-color: rgba(0, 0, 0, 0); margin-top: -36pt; margin-left: 49.5%; width: 100pt; height: 8pt; border: none; font-family: 'Verdana', Sans-serif; font-style: normal; font-weight: 700; font-size: 12px; text-decoration: none; position: fixed; text-align: center; vertical-align: middle; color: #424242; padding: 10px; display: inline-block; cursor: pointer;";
+                 event.srcElement.style = "background-color: rgba(0, 0, 0, 0); margin-left: 40%; width: 200pt; height: 8pt; border: none; font-family: 'Verdana', Sans-serif; font-style: normal; font-weight: 700; font-size: 12px; text-decoration: none; position: fixed; text-align: center; vertical-align: middle; color: #424242; padding: 10px; display: inline-block; cursor: pointer;";
             };
             doc.appendChild(about);
         };
@@ -538,7 +544,7 @@
 
     //update femme1
     updateF1();
-    //updateInter1();
+    //updateEnd();
     console.log("F1");
 
      function drawScene(whichScene){
