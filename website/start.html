@@ -1,0 +1,86 @@
+<html>
+<head>
+    <title>start</title>
+    <link rel="stylesheet" href="style/majorstyle.css">
+    <style>
+        #img{
+            /*position: fixed;*/
+            width: 200pt;
+            margin-left: 40%;
+            margin-top: 120pt;
+        }
+        label{
+            margin-left: 40%;
+            
+            overflow: hidden;
+            font-family: 'Verdana', Sans-serif;
+            font-style: normal;
+            font-weight: 700;
+            font-size: 12px;
+            text-decoration: none;
+            color: #424242;
+        }
+        #pswd{
+            margin-left: 40%;
+            width: 200px;
+            height: 30px;
+        }
+        #button1{
+            border: 1px solid #dddddd;
+            color: #424242;
+            margin-left: 10pt;
+            font-size: 12px;
+            width: 55px;
+            height: 30px;
+            padding: 0px;
+        }
+        #button1:hover{
+            color: #0000ff;
+            font-style: italic;
+            text-decoration: underline;
+        }
+        body{
+            background-image: url("assets/BORDERS.png");
+            /*background-size: 80%;*/
+            background-size: contain;
+        }
+        p{
+            /*position: relative;*/
+            color: #424242;
+            margin-left: 42%;
+            margin-top: 1%;
+            font-size: 12px;
+            font-family: 'Verdana', Sans-serif;
+            font-style: normal;
+            font-weight: 700;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <p>(1) CERTIFY YOUR HUMANITY</p>
+<div>
+    <img src="assets/LOGO.png" id="img" border="1">
+</div>
+<div>
+<form>
+    <br>
+    <label for="pswd"><br></label>
+    <input type="password" id="pswd">
+    <input class="button" id="button1" value=">>>" onclick="validate();" />
+</form>
+</div>
+<script type="text/javascript">
+    function validate() {
+        var confirmPassword = "cryptocorpus";
+        var password = document.getElementById("pswd").value;
+        if (password == confirmPassword) {
+             window.location="tutorial.html";
+        }
+        else{
+            alert("PASSWORD INCORRECT!");
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,452 @@
+<html>
+<head>
+    <title>F2</title>
+    <link rel="stylesheet" href="style/majorstyle.css">
+    <style>
+        #button1{
+            margin-left: 42%;
+            width: 200pt;
+            height: 8pt;
+        }
+        #myCanvas{
+            margin-top: 30pt;
+            background: rgba(0, 0, 255, 1);
+        }
+        #text{
+            margin-left: 32%;
+            margin-top: 44%;
+            width: 380pt;
+            height: 8pt;
+        }
+        body{
+            background-image: url("assets/BORDERS.png");
+            background-size: contain;
+        }
+    </style>
+</head>
+<body id="bg">
+    <div class="container">
+            <p>
+                <a onclick="aboutPressed()" class="button" id="button1"> 1 OF 6 >>></a>
+            </p>
+    </div>
+    <canvas id="myCanvas"></canvas>
+    <script src="js/three.js"></script>
+    <script src="js/OrbitControls.js"></script>
+    <script src="js/threex.keyboardstate.js"></script>
+    <script>
+
+    var renderer,
+        scene,
+        camera,
+        myCanvas = document.getElementById('myCanvas');
+
+    var updateFcts  = [];
+    var body = document.getElementById('bg');
+    var sceneState = {
+          C2: 0,
+          C3: 1,
+          C4: 2,
+          C5: 3,
+          C6: 4,
+          TUTORIAL: 5
+    };
+    var currentState = sceneState.C2;
+    var keyOn = false;
+
+    //RENDERER
+
+    renderer = new THREE.WebGLRenderer({
+      canvas: myCanvas, 
+      antialias: true,
+      alpha: true
+    });
+
+    renderer.autoClear = false;
+    renderer.setClearColor(0xffffff, 0);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth/1.25, window.innerHeight/1.25);
+
+    //CAMERA
+    camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1000 );
+    camera.position.set( 0, 0, 400 );
+
+    var keyboard   = new THREEx.KeyboardState(renderer.domElement);
+    renderer.domElement.setAttribute("tabIndex", "0");
+    renderer.domElement.focus();
+
+
+    //SCENE
+    scene = new THREE.Scene();
+
+    //LIGHTS
+    var light = new THREE.AmbientLight(0xffffff, 0.8);
+    scene.add(light);
+
+    var light2 = new THREE.PointLight(0xffffff, 0.8);
+    light2.position.y = 80;
+    light2.position.z = 100;
+    scene.add(light2);
+
+    //orbit control for concept scenes
+    controls = new THREE.OrbitControls( camera, renderer.domElement );
+    controls.enableDamping = true; 
+    controls.dampingFactor = 0.3;
+    controls.screenSpacePanning = false;
+    controls.maxDistance = 500;
+    controls.minDistance = 0;
+    //turn on & off for concepts
+    function orbitOn(){
+        camera.position.set( 0, 0, 400 );
+        controls.enableZoom = true;
+        controls.enableRotate = true;
+        controls.enablePan = true;
+    }
+
+    function orbitOff(){
+        camera.position.set( 0, 0, 400 );
+        controls.enableZoom = false;
+        controls.enableRotate = false;
+        controls.enablePan = false;
+        renderer.domElement.setAttribute("tabIndex", "0");
+        renderer.domElement.focus();
+    }
+
+    //set up skybox
+    //04 02
+    //03 01
+    var nav = 'assets/concept6/CryptoPlate-';
+    var urls = [
+                        nav + '04.png', nav + '02.png',
+                        nav + 'Top-Bottom.png', nav + 'Top-Bottom.png',
+                        nav + '03.png', nav + '01.png'
+                       ];
+    function setSky(){
+        var reflectionCube = new THREE.CubeTextureLoader().load( urls );
+        reflectionCube.format = THREE.RGBFormat;
+        var refractionCube = new THREE.CubeTextureLoader().load( urls );
+        refractionCube.mapping = THREE.CubeRefractionMapping;
+        refractionCube.format = THREE.RGBFormat;
+        scene.background = reflectionCube; 
+    }
+
+    var json1 = "cube.json";
+
+        
+        
+        var element = document.getElementById("button1");
+
+        
+
+    //Concept 1
+    function updateC1(){
+        orbitOn();
+        body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
+        json1 = "cube.json";
+        scene.remove(scene.children[2]);
+        var loaderC1 = new THREE.JSONLoader();
+        function addModelToSceneC1( geometry, materials ) {
+            var material = new THREE.MeshLambertMaterial();
+            var model = new THREE.Mesh( geometry, material );
+            scene.add( model );
+            function draw() {
+                controls.update();
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+        loaderC1.load( json1, addModelToSceneC1 );
+        //set up skybox assets/conceptSky/
+        setSky();
+    }
+
+    //Concept 2
+    function updateC2(){
+        element.innerHTML = " 2 OF 6 >>>";
+        camera.position.set( 0, 0, 400 );
+        body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
+        function draw() {
+            controls.update();
+            requestAnimationFrame(draw);
+        }
+        draw();
+        nav = 'assets/concept6/CryptoPlate-';
+        urls = [
+                        nav + '08.png', nav + '06.png',
+                        nav + 'Top-Bottom.png', nav + 'Top-Bottom.png',
+                        nav + '07.png', nav + '05.png'
+                       ];
+        setSky();
+    }
+
+    //Concept 3
+    function updateC3(){
+        element.innerHTML = " 3 OF 6 >>>";
+        camera.position.set( 0, 0, 400 );
+        body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
+        function draw() {
+            controls.update();
+            requestAnimationFrame(draw);
+        }
+        draw();
+        urls = [
+                        nav + '12.png', nav + '10.png',
+                        nav + 'Top-Bottom.png', nav + 'Top-Bottom.png',
+                        nav + '11.png', nav + '09.png'
+                       ];
+        setSky(); 
+    }
+
+    //Concept 4
+    function updateC4(){
+        element.innerHTML = " 4 OF 6 >>>";
+        camera.position.set( 0, 0, 400 );
+        body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
+        function draw() {
+            controls.update();
+            requestAnimationFrame(draw);
+        }
+        draw();
+        urls = [
+                        nav + '16.png', nav + '14.png',
+                        nav + 'Top-Bottom.png', nav + 'Top-Bottom.png',
+                        nav + '15.png', nav + '13.png'
+                       ];
+        setSky(); 
+    }
+
+    //Concept 5
+    function updateC5(){
+        element.innerHTML = " 5 OF 6 >>>";
+        camera.position.set( 0, 0, 400 );
+        body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
+        function draw() {
+            controls.update();
+            requestAnimationFrame(draw);
+        }
+        draw();
+        urls = [
+                        nav + '20.png', nav + '18.png',
+                        nav + 'Top-Bottom.png', nav + 'Top-Bottom.png',
+                        nav + '19.png', nav + '17.png'
+                       ];
+        setSky(); 
+    }
+
+    //Concept 5
+    function updateC6(){
+        element.innerHTML = " 6 OF 6 >>>";
+        camera.position.set( 0, 0, 400 );
+        body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
+        function draw() {
+            controls.update();
+            requestAnimationFrame(draw);
+        }
+        draw();
+        urls = [
+                        nav + '24.png', nav + '22.png',
+                        nav + 'Top-Bottom.png', nav + 'Top-Bottom.png',
+                        nav + '23.png', nav + '21.png'
+                       ];
+        setSky(); 
+    }
+
+    //Tutorial
+    function updateTutorial(){
+        element.innerHTML = "TUTORIAL >>>";
+        element.onclick = function() {
+                location.href = "mwindex.html";
+            };
+        orbitOff();
+        body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
+        json1 = "model/w1json/w1.json";
+        scene.remove(scene.children[2]);
+        scene.background = null; 
+        var loader = new THREE.JSONLoader();
+        var loader2 = new THREE.JSONLoader();
+        function addModelToScene( geometry, materials ) {
+            var material = new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                wireframe: true
+            });
+            var model = new THREE.Mesh( geometry, material );
+            model.position.x = 100;
+            model.position.y = -80;
+            scene.add( model );
+            function draw() {
+                updateFcts.push(function(){
+                    if( keyboard.pressed('left') ){
+                        model.rotation.y -= 0.0003;           
+                    }else if( keyboard.pressed('right') ){
+                        model.rotation.y += 0.0003;
+                    }
+                    if( keyboard.pressed('down') ){
+                        model.position.z -= 0.02;       
+                    }else if( keyboard.pressed('up') ){
+                        model.position.z += 0.02;       
+                    }
+                 });
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+
+        function addModelToScene2( geometry, materials ) {
+           var material = new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                wireframe: true
+            });
+           var model = new THREE.Mesh( geometry, material );
+           model.position.x = -100;
+           model.position.y = -70;
+           scene.add( model );
+           function draw() {
+                updateFcts.push(function(){
+                    if( keyboard.pressed('left') ){
+                        model.rotation.y -= 0.0003;           
+                    }else if( keyboard.pressed('right') ){
+                        model.rotation.y += 0.0003;
+                    }
+                    if( keyboard.pressed('down') ){
+                        model.position.z -= 0.02;       
+                    }else if( keyboard.pressed('up') ){
+                        model.position.z += 0.02;       
+                    }
+                 });
+                requestAnimationFrame(draw);
+            }
+            draw();
+         }
+        loader.load( json1, addModelToScene);
+        loader2.load( "model/m1json/m1.json", addModelToScene2);
+    }
+
+    updateC1();
+    console.log("C1");
+
+    function drawScene(whichScene){
+      switch(currentState){
+        case sceneState.C2:
+            console.log("C2");
+            updateC2();
+        break;
+        case sceneState.C3:
+            console.log("C3");
+            updateC3();
+        break;
+        case sceneState.C4:
+            console.log("C4");
+            updateC4();
+        break;
+        case sceneState.C5:
+        console.log("C5");
+            updateC5();
+        break;
+        case sceneState.C6:
+            console.log("C6");
+            updateC6();
+        break;
+        case sceneState.TUTORIAL:
+            console.log("TUTORIAL");
+            updateTutorial();
+        break;
+        default:
+          break;
+      }
+    }
+
+    function checkTransition(whichScene){
+      switch (whichScene){
+        case sceneState.C2:
+        if (keyOn) {
+          setUpScene(currentState);
+        }
+        break;
+        case sceneState.C3:
+        if (keyOn) {
+          setUpScene(currentState);
+        }
+        break;
+        case sceneState.C4:
+        if (keyOn) {
+          setUpScene(currentState);
+        }
+        break;
+        case sceneState.C5:
+        if (keyOn) {
+          setUpScene(currentState);
+        }
+        break;
+        case sceneState.C6:
+        if (keyOn) {
+          setUpScene(currentState);
+        }
+        break;
+        case sceneState.TUTORIAL:
+        if (keyOn) {
+          currentState = sceneState.C2;
+          setUpScene(currentState);
+        }        
+        break;
+      default:
+        break;
+      }
+    }
+
+    function setUpScene(whichScene) {
+      switch (whichScene) {
+        case sceneState.C2:
+          break;
+        case sceneState.C3:
+          break;
+        case sceneState.C4:
+          break;
+        case sceneState.C5:
+          break;
+        case sceneState.C6:
+          break;
+        case sceneState.TUTORIAL:
+          break;
+        default:
+          break;
+      }
+    }
+
+     updateFcts.push(function(){
+        keyOn = false;
+        renderer.render( scene, camera );       
+    });
+
+     var lastTimeMsec= null;
+     requestAnimationFrame(function animate(nowMsec){
+        // keep looping
+        requestAnimationFrame( animate );
+        // measure time
+        lastTimeMsec    = lastTimeMsec || nowMsec-1000/60;
+        var deltaMsec   = Math.min(200, nowMsec - lastTimeMsec);
+        lastTimeMsec    = nowMsec;
+        // call each update function
+        updateFcts.forEach(function(updateFn){
+            updateFn(deltaMsec/1000, nowMsec/1000);
+        });
+     });
+
+    function aboutPressed(){
+        drawScene(currentState);
+                checkTransition(currentState);
+                keyOn = true;
+                if (currentState < 6){
+                currentState++;
+                console.log(currentState);
+                }           
+    }
+
+    </script>
+    <div class="container">
+            <p>
+                <a href="" class="button" id="text">USE MOUSEPAD TO LOOK AROUND</a><br>
+                <a href="" class="button" id="text">MODEL: LEFT + RIGHT ARROW: ROTATION / UP + DOWN: DISTANCE</a>
+            </p>
+    </div>
+</body>
+</html>

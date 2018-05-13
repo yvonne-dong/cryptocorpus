@@ -1,0 +1,688 @@
+<html>
+<head>
+    <title>H1</title>
+    <link rel="stylesheet" href="style/majorstyle.css">
+    <style>
+        #button1{
+            margin-left: 40%;
+            margin-top: -35.5pt;
+            width: 50pt;
+            height: 8pt;
+        }
+        #textDisplay{
+            padding: 10px;
+            margin-top: 1pt;
+            margin-left: 44%;
+            border: none;
+            font-family: 'Verdana', Sans-serif;
+            font-style: normal;
+            font-weight: 700;
+            font-size: 12px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body id="bg">
+    <video id="video" autoplay style="display:none"></video>
+    <p><div id="textDisplay">(3) DISCIPLINE THE BODY</div></p>
+    <div class="container">
+            <p><a onclick="aboutPressed()" class="button" id="button1"><<< </a></p>
+    </div>
+    <canvas id="myCanvas"></canvas>
+    <script src="js/three.js"></script>
+    <script src="js/threex.keyboardstate.js"></script>
+    <script src="js/OrbitControls.js"></script>
+    <script>
+    //video texture reference: https://threejs.org/examples/?q=webcam#webgl_materials_video_webcam
+
+    //---scene setup---
+    var renderer,
+        scene,
+        camera,
+        video,
+        myCanvas = document.getElementById('myCanvas');
+    //---keyboardstate library setup---
+    var updateFcts  = [];
+    //---API---
+    var req = new XMLHttpRequest();
+    var USDf;
+    //---for updating background---
+    var body = document.getElementById('bg');
+    //---scene state setup---
+    var sceneState = {
+          C1: 0,
+          H2: 1,
+          C2: 2,
+          H3: 3,
+          C3: 4,
+          Inter1: 5,
+          Inter2: 6,
+          C4: 7,
+          Hend: 8
+    };
+    var currentState = sceneState.C1;
+    var keyOn = false;
+
+    //renderer
+    renderer = new THREE.WebGLRenderer({
+      canvas: myCanvas, 
+      antialias: true,
+      alpha: true
+    });
+    renderer.autoClear = false;
+    renderer.setClearColor(0xffffff, 0);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth/1.25, window.innerHeight/1.25);
+
+    //camera setup
+    camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1000 );
+    camera.position.set( 0, 0, 400 );
+
+    var keyboard   = new THREEx.KeyboardState(renderer.domElement);
+    renderer.domElement.setAttribute("tabIndex", "0");
+    renderer.domElement.focus();
+
+    //scene
+    scene = new THREE.Scene();
+    video = document.getElementById( 'video' );
+
+    //lights
+    var light = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(light);
+    var light2 = new THREE.PointLight(0xffffff, 0.7);
+    light2.position.y = 80;
+    light2.position.z = 100;
+    scene.add(light2);
+
+    //H Ending: webcam
+    var texture = new THREE.VideoTexture( video );
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.format = THREE.RGBFormat;
+    
+    //check cam
+    if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
+               var constraints = { video: { width: 1280, height: 720, facingMode: 'user' } };
+               navigator.mediaDevices.getUserMedia( constraints ).then( function( stream ) {
+               video.src = window.URL.createObjectURL( stream );
+               video.play();
+           } ).catch( function( error ) {
+             console.error( 'Unable to access the camera/webcam.', error );
+           } );
+        } else {
+    console.error( 'MediaDevices interface not available.' );
+    }
+
+    //orbit control for concept scenes
+    controls = new THREE.OrbitControls( camera, renderer.domElement );
+    controls.enableDamping = true; 
+    controls.dampingFactor = 0.3;
+    controls.screenSpacePanning = false;
+    controls.maxDistance = 500;
+    controls.minDistance = 0;
+    //turn on & off for concepts
+    function orbitOn(){
+        camera.position.set( 0, 0, 400 );
+        controls.enableZoom = true;
+        controls.enableRotate = true;
+        controls.enablePan = true;
+    }
+
+    function orbitOff(){
+        camera.position.set( 0, 0, 400 );
+        controls.enableZoom = false;
+        controls.enableRotate = false;
+        controls.enablePan = false;
+        renderer.domElement.setAttribute("tabIndex", "0");
+        renderer.domElement.focus();
+    }
+
+    //set up skybox
+    var nav = 'assets/conceptSky/CryptoPlate-';
+    var urls = [
+                        nav + '28.png', nav + '26.png',
+                        nav + 'Top-Bottom.png', nav + 'Top-Bottom.png',
+                        nav + '27.png', nav + '25.png'
+                       ];
+    function setSky(){
+        var reflectionCube = new THREE.CubeTextureLoader().load( urls );
+        reflectionCube.format = THREE.RGBFormat;
+        var refractionCube = new THREE.CubeTextureLoader().load( urls );
+        refractionCube.mapping = THREE.CubeRefractionMapping;
+        refractionCube.format = THREE.RGBFormat;
+        scene.background = reflectionCube; 
+    }
+
+
+    //load first model 
+    var json1 = "model/m1json/m1.json";
+    //var json1 = "model/wInt2json/wInt2.json";
+
+    //Homme 1
+    function updateH1(){
+        orbitOff();
+        body.style = "background-image: url('assets/BORDERS.png'), url('assets/M1W1BG.png'); background-size: contain, 80%; background-repeat: no-repeat; background-position: center; background-attachment: fixed; ";
+        var loader = new THREE.JSONLoader();
+        function addModelToScene( geometry, materials ) {
+            var material = new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture("textures/M1.png") });
+            var model = new THREE.Mesh( geometry, material );
+            model.position.y = -80;
+            scene.add( model );
+            function draw() {
+                updateFcts.push(function(){
+                    if( keyboard.pressed('left') ){
+                        model.rotation.y -= 0.0003;           
+                    }else if( keyboard.pressed('right') ){
+                        model.rotation.y += 0.0003;
+                    }
+                    if( keyboard.pressed('down') ){
+                        model.position.z -= 0.02;       
+                    }else if( keyboard.pressed('up') ){
+                        model.position.z += 0.02;       
+                    }
+                 });
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+        loader.load( json1, addModelToScene );
+
+    }
+
+    //Concept 1
+    function updateC1(){
+        orbitOn();
+        body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
+        json1 = "cube.json";
+        scene.remove(scene.children[2]);
+        var loaderC1 = new THREE.JSONLoader();
+        function addModelToSceneC1( geometry, materials ) {
+            var material = new THREE.MeshLambertMaterial();
+            var model = new THREE.Mesh( geometry, material );
+            scene.add( model );
+            function draw() {
+                controls.update();
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+        loaderC1.load( json1, addModelToSceneC1 );
+        //set up skybox assets/conceptSky/
+        setSky();
+    }
+
+    //Homme 2
+    function updateH2(){
+        orbitOff();
+        body.style = "background-image: url('assets/BORDERS.png'), url('assets/M2BG.png'); background-size: contain, 80%; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
+        json1 = "model/m2json/m2.json";
+        scene.remove(scene.children[2]);
+        scene.background = null; 
+        var loader2 = new THREE.JSONLoader();
+        function addModelToScene2( geometry, materials ) {
+            var material = new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture("textures/M2.png") });
+            var model = new THREE.Mesh( geometry, material );
+            model.position.y = -80;
+            scene.add( model );
+            function draw() {
+                updateFcts.push(function(){
+                    if( keyboard.pressed('left') ){
+                        model.rotation.y -= 0.0003;           
+                    }else if( keyboard.pressed('right') ){
+                        model.rotation.y += 0.0003;
+                    }
+                    if( keyboard.pressed('down') ){
+                        model.position.z -= 0.02;       
+                    }else if( keyboard.pressed('up') ){
+                        model.position.z += 0.02;       
+                    }
+                 });
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+        loader2.load( json1, addModelToScene2 ); 
+    } 
+
+    //Concept 2
+    function updateC2(){
+        orbitOn();
+        body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
+        json1 = "cube.json";
+        scene.remove(scene.children[2]);
+        var loaderC2 = new THREE.JSONLoader();
+        function addModelToSceneC2( geometry, materials ) {
+            var material = new THREE.MeshLambertMaterial();
+            var model = new THREE.Mesh( geometry, material );
+            scene.add( model );
+            function draw() {
+                controls.update();
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+        loaderC2.load( json1, addModelToSceneC2 );
+        nav = 'assets/conceptSky/CryptoPlate-';
+        urls = [
+                        nav + '32.png', nav + '30.png',
+                        nav + 'Top-Bottom.png', nav + 'Top-Bottom.png',
+                        nav + '31.png', nav + '29.png'
+                       ];
+        setSky();
+    }
+
+    //Homme 3
+    function updateH3(){
+        orbitOff();
+        body.style = "background-image: url('assets/BORDERS.png'), url('assets/M3BG.png'); background-size: contain, 80%; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
+        json1 = "model/m3json/m3.json";
+        scene.remove(scene.children[2]);
+        scene.background = null; 
+        var loader3 = new THREE.JSONLoader();
+        function addModelToScene3( geometry, materials ) {
+            var material = new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture("textures/M3.png") });
+            var model = new THREE.Mesh( geometry, material );
+            model.position.z = -50;
+            model.position.y = -80;
+            scene.add( model );
+            function draw() {
+                updateFcts.push(function(){
+                    if( keyboard.pressed('left') ){
+                        model.rotation.y -= 0.0003;           
+                    }else if( keyboard.pressed('right') ){
+                        model.rotation.y += 0.0003;
+                    }
+                    if( keyboard.pressed('down') ){
+                        model.position.z -= 0.02;       
+                    }else if( keyboard.pressed('up') ){
+                        model.position.z += 0.02;       
+                    }
+                 });
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+        loader3.load( json1, addModelToScene3 ); 
+    } 
+
+    //Concept 3
+    function updateC3(){
+        orbitOn();
+        body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
+        json1 = "cube.json";
+        scene.remove(scene.children[2]);
+        var loaderC3 = new THREE.JSONLoader();
+        function addModelToSceneC3( geometry, materials ) {
+            var material = new THREE.MeshLambertMaterial();
+            var model = new THREE.Mesh( geometry, material );
+            scene.add( model );
+            function draw() {
+                controls.update();
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+        loaderC3.load( json1, addModelToSceneC3 );
+        urls = [
+                        nav + '36.png', nav + '34.png',
+                        nav + 'Top-Bottom.png', nav + 'Top-Bottom.png',
+                        nav + '35.png', nav + '33.png'
+                       ];
+        setSky(); 
+    }
+
+    //Inter 1
+    function updateInter1(){
+        orbitOn();
+        body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
+        json1 = "model/mInt1json/mInt1.json";
+        scene.remove(scene.children[2]);
+        var loaderInter1 = new THREE.JSONLoader();
+        function addModelToSceneInter1( geometry, materials ) {
+            var material = new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture("textures/MInt1.png")});
+            var model = new THREE.Mesh( geometry, material );
+            model.position.z = -50;
+            model.position.y = -150;
+            scene.add( model );
+            function draw() {
+                model.rotation.y += 0.05;
+                updateFcts.push(function(){
+                    if( keyboard.pressed('left') ){
+                        camera.rotation.y += 0.001;           
+                    }else if( keyboard.pressed('right') ){
+                        camera.rotation.y -= 0.001;
+                    }
+                 });
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+        loaderInter1.load( json1, addModelToSceneInter1 ); 
+        var nav2 = 'assets/Inter/CubeBackground-';
+        urls = [
+                nav2 + '12.png', nav2 + '10.png',
+                nav2 + 'Top-Bottom.png', nav2 + 'Top-Bottom.png',
+                nav2 + '11.png', nav2 + '09.png'
+                ];
+        setSky();
+    } 
+
+    //Inter 2
+    function updateInter2(){
+        orbitOn();
+        body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
+        json1 = "model/mInt2json/mInt2.json";
+        scene.remove(scene.children[2]);
+        var loaderInter2 = new THREE.JSONLoader();
+        function addModelToSceneInter2( geometry, materials ) {
+            var material = new THREE.MeshLambertMaterial({map: THREE.ImageUtils.loadTexture("textures/MWInt2.png")});
+            var model = new THREE.Mesh( geometry, material );
+            model.position.z = -50;
+            model.position.y = -150;
+            scene.add( model );
+            function draw() {
+                model.rotation.y += 0.05;
+                updateFcts.push(function(){
+                    if( keyboard.pressed('left') ){
+                        camera.rotation.y += 0.0001;           
+                    }else if( keyboard.pressed('right') ){
+                        camera.rotation.y -= 0.0001;
+                    }
+                    // if( keyboard.pressed('down') ){
+                    //     camera.position.z -= 0.02;       
+                    // }else if( keyboard.pressed('up') ){
+                    //     camera.position.z += 0.02;       
+                    // }
+                 });
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+        loaderInter2.load( json1, addModelToSceneInter2 ); 
+        var nav2 = 'assets/Inter/CubeBackground-';
+        urls = [
+                nav2 + '16.png', nav2 + '14.png',
+                nav2 + 'Top-Bottom.png', nav2 + 'Top-Bottom.png',
+                nav2 + '15.png', nav2 + '13.png'
+                ];
+        setSky(); 
+    } 
+
+    //Concept 4
+    function updateC4(){
+        orbitOn();
+        body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
+        json1 = "cube.json";
+        scene.remove(scene.children[2]);
+        var loaderC4 = new THREE.JSONLoader();
+        function addModelToSceneC4( geometry, materials ) {
+            var material = new THREE.MeshLambertMaterial();
+            var model = new THREE.Mesh( geometry, material );
+            scene.add( model );
+            function draw() {
+                controls.update();
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+        loaderC4.load( json1, addModelToSceneC4 );
+        urls = [
+                        nav + '40.png', nav + '38.png',
+                        nav + 'Top-Bottom.png', nav + 'Top-Bottom.png',
+                        nav + '39.png', nav + '37.png'
+                       ];
+        setSky();
+    }
+
+    //Call Ending
+    function updateEnd(){
+        orbitOff();
+        body.style = "background-image: url('assets/BORDERS.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-attachment: fixed;";
+        json1 = "model/mInt2json/mInt2.json";
+        scene.remove(scene.children[2]);
+        scene.background = null; 
+        var loader3 = new THREE.JSONLoader();
+        function addModelToScene3( geometry, materials ) {
+            var material = new THREE.MeshLambertMaterial({ color: 0xffffff });
+            var model = new THREE.Mesh( geometry, material );
+            model.position.z = -50;
+            model.position.y = -80;
+            scene.add( model );
+            function draw() {
+                requestAnimationFrame(draw);
+                // Drawing code goes here
+                model.rotation.y += 0.05;
+            }
+            draw();
+        }
+        loader3.load( json1, addModelToScene3 ); 
+
+        //API: getting Bitcoin to USD real-time rate from coindesk
+        //BITCOIN - USD RATE * 0.01: REAL TIME
+        req.onload = function(){
+        var jsonResponse = JSON.parse(this.responseText);
+        console.log(jsonResponse['time'].updated);
+
+        USDf = jsonResponse['bpi'].USD.rate_float;
+        var geometry = new THREE.BoxGeometry( 50, 50, 50 );
+        var material = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
+        var cubeNum = parseInt(USDf * 0.01);
+
+        //reference: https://github.com/mrdoob/three.js/blob/master/examples/canvas_interactive_cubes_tween.html
+            for ( var i = 0; i < cubeNum; i ++ ) {
+                var object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial({ map: texture } ) );
+                object.position.x = Math.random() * 600;
+                object.position.y = Math.random() * 700;
+                object.position.z = Math.random() * 600;
+                object.rotation.x = Math.random() * Math.PI;
+                object.rotation.y = Math.random() * Math.PI;
+                object.rotation.z = Math.random() * Math.PI;
+                scene.add( object );
+            }
+        var radius = 600;
+        var theta = 0;
+        spinCamera();
+        function spinCamera(){
+            camera.lookAt( scene.position ); 
+            theta += 0.1;
+            camera.position.x = radius * Math.sin( THREE.Math.degToRad( theta ) );
+            camera.position.y = radius * Math.sin( THREE.Math.degToRad( theta ) );
+            camera.position.z = radius * Math.cos( THREE.Math.degToRad( theta ) );
+            requestAnimationFrame(spinCamera);
+        } 
+
+        };
+
+        function callData(){
+          req.open('GET', 'https://api.coindesk.com/v1/bpi/currentprice/CNY.json');
+          req.send();
+        }
+        callData();
+
+        //Remove previous statebutton and add ending button
+        var text = document.getElementById("textDisplay");
+        var element = document.getElementById("button1");
+        element.parentNode.removeChild(element);
+        text.innerHTML = "END";
+
+        function addEnding() {
+            var doc = document.body;
+            var about = document.createElement('button');
+            about.innerHTML = "<<<";
+            text.style="margin-left: 50%";
+            about.style = "background-color: rgba(0, 0, 0, 0); margin-top: -36pt; margin-left: 44%; width: 100pt; height: 8pt; border: none; font-family: 'Verdana', Sans-serif; font-style: normal; font-weight: 700; font-size: 12px; text-decoration: none; position: fixed; text-align: center; vertical-align: middle; color: #424242; padding: 10px; display: inline-block; cursor: pointer;";
+            about.onclick = function() {
+                location.href = "about.html";
+            };
+            about.onmouseover = function(event) {
+                 event.srcElement.style = "background-color: rgba(0, 0, 0, 0); margin-top: -36pt; margin-left: 44%; width: 100pt; height: 8pt; border: none; font-family: 'Verdana', Sans-serif; font-style: italic; font-weight: 700; font-size: 12px; text-decoration: underline; position: fixed; text-align: center; vertical-align: middle; color: #0000ff; padding: 10px; display: inline-block; cursor: pointer;";
+             };
+            about.onmouseleave = function(event) {
+                 event.srcElement.style = "background-color: rgba(0, 0, 0, 0); margin-top: -36pt; margin-left: 44%; width: 100pt; height: 8pt; border: none; font-family: 'Verdana', Sans-serif; font-style: normal; font-weight: 700; font-size: 12px; text-decoration: none; position: fixed; text-align: center; vertical-align: middle; color: #424242; padding: 10px; display: inline-block; cursor: pointer;";
+            };
+            doc.appendChild(about);
+        }
+        addEnding();
+    } 
+
+    //update homme 1
+    //updateInter1();
+    updateH1();
+    console.log("H1");
+
+     function drawScene(whichScene){
+      switch(currentState){
+        case sceneState.C1:
+            console.log("C1");
+            updateC1();
+        break;
+        case sceneState.H2:
+        console.log("H2");
+        updateH2();
+          break;
+        case sceneState.C2:
+            console.log("C2");
+            updateC2();
+        break;
+        case sceneState.H3:
+        console.log("H3");
+            updateH3();
+        break;
+        case sceneState.C3:
+            console.log("C3");
+            updateC3();
+        break;
+        case sceneState.Inter1:
+            console.log("Inter1");
+            updateInter1();
+        break;
+        case sceneState.Inter2:
+            console.log("Inter2");
+            updateInter2();
+        break;
+        case sceneState.C4:
+            console.log("C4");
+            updateC4();
+        break;
+        case sceneState.Hend:
+        console.log("H End");
+        updateEnd();
+          break;
+        default:
+          break;
+      }
+    }
+
+    function checkTransition(whichScene){
+      switch (whichScene){
+        case sceneState.C1:
+        if (keyOn) {
+          setUpScene(currentState);
+        }
+        break;
+        case sceneState.H2:
+        if (keyOn) {
+          setUpScene(currentState);
+        }
+        break;
+        case sceneState.C2:
+        if (keyOn) {
+          setUpScene(currentState);
+        }
+        break;
+        case sceneState.H3:
+        if (keyOn) {
+          setUpScene(currentState);
+        }
+        break;
+        case sceneState.C3:
+        if (keyOn) {
+          setUpScene(currentState);
+        }
+        break;
+        case sceneState.Inter1:
+        if (keyOn) {
+          setUpScene(currentState);
+        }
+        break;
+        case sceneState.Inter2:
+        if (keyOn) {
+          setUpScene(currentState);
+        }
+        break;
+        case sceneState.C4:
+        if (keyOn) {
+          setUpScene(currentState);
+        }
+        break;
+        case sceneState.Hend:
+        if (keyOn) {
+          currentState = sceneState.C1;
+          setUpScene(currentState);
+        }
+        break;
+      default:
+        break;
+      }
+    }
+
+    function setUpScene(whichScene) {
+      switch (whichScene) {
+        case sceneState.C1:
+          break;
+        case sceneState.H2:
+          break;
+        case sceneState.C2:
+          break;
+        case sceneState.H3:
+          break;
+        case sceneState.C3:
+          break;
+        case sceneState.Inter1:
+          break;
+        case sceneState.Inter2:
+          break; 
+        case sceneState.C4:
+          break;
+        case sceneState.Hend:
+          break;
+        default:
+          break;
+      }
+    }
+
+     //render loop
+     updateFcts.push(function(){
+        keyOn = false;
+        //requestAnimationFrame(render);
+        renderer.render(scene, camera);   
+    });
+
+     var lastTimeMsec= null;
+     requestAnimationFrame(function animate(nowMsec){
+        // keep looping
+        requestAnimationFrame( animate );
+        // measure time
+        lastTimeMsec    = lastTimeMsec || nowMsec-1000/60;
+        var deltaMsec   = Math.min(200, nowMsec - lastTimeMsec);
+        lastTimeMsec    = nowMsec;
+        // call each update function
+        updateFcts.forEach(function(updateFn){
+            updateFn(deltaMsec/1000, nowMsec/1000);
+        });
+     });
+
+
+    function aboutPressed(){
+        drawScene(currentState);
+                checkTransition(currentState);
+                keyOn = true;
+                if (currentState < 8){
+                currentState++;
+                console.log(currentState);
+                }           
+    }
+ 
+    </script>
+</body>
+</html>
